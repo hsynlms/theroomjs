@@ -3,6 +3,8 @@ A vanilla javascript plugin that allows you to outline dom elements like web ins
 
 TheRoom JS can be accessable in global variable and named as `theRoom`. It exposes outside two functions, `start` and `stop`.
 
+Demo : https://codepen.io/hsynlms/pen/jzjOyo
+
 - **start(*options*)** : start function takes only one optional parameter for custom options.
 ```javascript
   // start theRoom to inspect elements

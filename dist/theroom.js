@@ -17,6 +17,7 @@
       transitionSpeed: 200,
       useInline: true,
       showInfo: true,
+      template: "",
       onStart: null,
       onStarting: null,
       onStop: null,
@@ -182,6 +183,23 @@
           var inspectorStyles = prepareInspectorStyles(top, left, width, height).replace(/(\{|\})/g, "");
           options.inspector.setAttribute("style", inspectorStyles);
 
+          // show the element details
+          if (typeof options.showInfo === "boolean" && options.showInfo) {
+            var detailsEl = options.inspector.querySelector("#" + options.namespace + "-info");
+
+            if (detailsEl) {
+              detailsEl.querySelector("#" + options.namespace + "-tag").innerText = target.tagName;
+
+              if (target.id) {
+                detailsEl.querySelector("#" + options.namespace + "-id").innerText = "#" + target.id;
+              }
+
+              if (target.className) {
+                detailsEl.querySelector("#" + options.namespace + "-class").innerText = "." + target.className.split(/\s+/).join(".");
+              }
+            }
+          }
+
           break;
       }
     };
@@ -195,6 +213,14 @@
         case "start":
           // bind element click handler
           document.querySelector("body").addEventListener("click", eventEmitter);
+
+          // if details are activated, append template into inspector element
+          if (typeof options.showInfo === "boolean" &&
+              options.showInfo &&
+              typeof options.template === "string" &&
+              options.template) {
+            options.inspector.innerHTML = options.template;
+          }
 
           break;
         case "stop":

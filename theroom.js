@@ -1,5 +1,5 @@
 /*
-* TheRoom JS
+* TheRoom JS v1.0.1
 * A vanilla javascript plugin that allows you to outline dom element like web inspector.
 * Works on Chrome, Firefox and Safari
 *
@@ -16,6 +16,11 @@
       bgcolor: "rgba(255,0,0,0.5)",
       transitionSpeed: 200,
       useInline: true,
+      onStart: null,
+      onStarting: null,
+      onStop: null,
+      onStopping: null,
+      onClick: null,
       exceptions: [
         "head",
         "meta",
@@ -145,28 +150,50 @@
       // skip itself
       if (target.id === options.namespace) return;
 
-      // get target element position information
-      var pos = target.getBoundingClientRect();
+      switch(event.type) {
+        case "click":
+          eventController("onClick", target);
 
-      // get scroll top value
-      var scrollTop = window.scrollY;
+          break;
+        case "mouseover":
+          // get target element position information
+          var pos = target.getBoundingClientRect();
 
-      var width = pos.width;
-      var height = pos.height;
-      var top = Math.max(0, pos.top + scrollTop);
-      var left = pos.left;
+          // get scroll top value
+          var scrollTop = window.scrollY;
 
-      // drag highligter on target node
-      options.inspector.style.width = width + "px";
-      options.inspector.style.height = height + "px";
-      options.inspector.style.top = top + "px";
-      options.inspector.style.left = left + "px";
+          var width = pos.width;
+          var height = pos.height;
+          var top = Math.max(0, pos.top + scrollTop);
+          var left = pos.left;
+
+          // drag highligter on target node
+          options.inspector.style.width = width + "px";
+          options.inspector.style.height = height + "px";
+          options.inspector.style.top = top + "px";
+          options.inspector.style.left = left + "px";
+
+          break;
+      }
     };
 
-    // event controller
-    var eventControl = function(type) {
+    // start/stop engine
+    var engine = function(type) {
       // check if the given parameter is valid
       if (!type) return;
+
+      switch(type) {
+        case "start":
+          // bind element click handler
+          document.querySelector("body").addEventListener("click", eventEmitter);
+
+          break;
+        case "stop":
+          // unbind element click handler
+          document.querySelector("body").removeEventListener("click", eventEmitter);
+
+          break;
+      }
 
       // get all existing nodes in the page
       var query = getSelectorQuery();
@@ -183,27 +210,70 @@
       }
     };
 
+    // event executor
+    var eventController = function(type, element) {
+      // even type validation
+      if (!options[type] || typeof options[type] !== "function") return;
+
+      // execute the event if it is provided
+      switch(type) {
+        case "onStart":
+          options.onStart.call();
+
+          break;
+        case "onStarting":
+          options.onStarting.call();
+
+          break;
+        case "onStop":
+          options.onStop.call();
+
+          break;
+        case "onStopping":
+          options.onStopping.call();
+
+          break;
+        case "onClick":
+          // pass the clicked element
+          options.onClick.call(undefined, element);
+
+          break;
+      }
+    };
+
     // start to inspect function
     var start = function(opts) {
       // override user options
       applyNewOptions(opts);
 
+      // run onStarting event
+      eventController("onStarting");
+
       // get an inspector element instance
       var inspector = getInspector();
 
-      // bind event
-      eventControl("start");
+      // start engine
+      engine("start");
+
+      // run onStart event
+      eventController("onStart");
     };
 
     // stop to inspect function
     var stop = function() {
-      // unbind event
-      eventControl("stop");
+      // run onStopping event
+      eventController("onStopping");
+
+      // stop engine
+      engine("stop");
 
       // remove the inspector
       getInspector().remove();
 
       options.inspector = null;
+
+      // run onStop event
+      eventController("onStop");
     };
 
     return {

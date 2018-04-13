@@ -189,14 +189,8 @@
 
             if (detailsEl) {
               detailsEl.querySelector("#" + options.namespace + "-tag").innerText = target.tagName;
-
-              if (target.id) {
-                detailsEl.querySelector("#" + options.namespace + "-id").innerText = "#" + target.id;
-              }
-
-              if (target.className) {
-                detailsEl.querySelector("#" + options.namespace + "-class").innerText = "." + target.className.split(/\s+/).join(".");
-              }
+              detailsEl.querySelector("#" + options.namespace + "-id").innerText = (target.id ? ("#" + target.id) : "");
+              detailsEl.querySelector("#" + options.namespace + "-class").innerText = (target.className ? ("." + target.className.split(/\s+/).join(".")) : "");
             }
           }
 

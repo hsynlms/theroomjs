@@ -41,7 +41,7 @@
 
           for (var key in obj) {
             if (obj.hasOwnProperty(key) && obj[key]) {
-              css += key + ":" + obj[key] + ";";
+              css += key + ": " + obj[key] + ";";
             }
           }
 
@@ -68,24 +68,34 @@
       return options.inspector;
     };
 
+    // prepare inspector element css styles
+    var prepareInspectorStyles = function(top, left, width, height) {
+      // prepare inspector element styles
+      var _styles = {
+        "transition": ("all " + options.transitionSpeed + "ms"),
+        "position": "absolute",
+        "top": (top || 0) + "px",
+        "left": (left || 0) + "px",
+        "width": (width || 0) + "px",
+        "height": (height || 0) + "px",
+        "pointer-events": "none",
+        "z-index": "2147483647",
+        "background-color": options.bgcolor
+      };
+
+      var styles = utils.objectToCss(_styles);
+
+      return styles;
+    };
+
     // inspector element creator
     var createInspector = function() {
       // create a new inspector element
       var inspector = document.createElement("div");
       inspector.id = options.namespace;
 
-      // prepare inspector element styles
-      var styles = {
-        "transition": ("all " + options.transitionSpeed + "ms"),
-        "position": "absolute",
-        "top": 0,
-        "left": 0,
-        "pointer-events": "none",
-        "z-index": "2147483647",
-        "background-color": options.bgcolor
-      };
-
-      var inspectorStyles = utils.objectToCss(styles);
+      // get inspector styles as a string
+      var inspectorStyles = prepareInspectorStyles();
 
       if (typeof options.useInline === "boolean" && options.useInline) {
         inspector.style = inspectorStyles.replace(/(\{|\})/g, "");
@@ -160,18 +170,16 @@
           var pos = target.getBoundingClientRect();
 
           // get scroll top value
-          var scrollTop = window.scrollY;
+          var scrollTop = window.scrollY || document.documentElement.scrollTop; // IE fix
 
           var width = pos.width;
           var height = pos.height;
           var top = Math.max(0, pos.top + scrollTop);
           var left = pos.left;
 
-          // drag highligter on target node
-          options.inspector.style.width = width + "px";
-          options.inspector.style.height = height + "px";
-          options.inspector.style.top = top + "px";
-          options.inspector.style.left = left + "px";
+          // get new inspector styles to be able to drag inspector on target node
+          var inspectorStyles = prepareInspectorStyles(top, left, width, height).replace(/(\{|\})/g, "");
+          options.inspector.setAttribute("style", inspectorStyles);
 
           break;
       }

@@ -19,6 +19,11 @@ TheRoom JS can be accessable in global variable and named as `theRoom`. It expos
 ```javascript
   // custom options
   var options = {
+    onStart: function() {}, // the function that will be fired after initialization
+    onStarting: function() {}, // the function that will be fired before initialization
+    onStop: function() {}, // the function that will be fired after uninitialization
+    onStopping: function() {}, // the function that will be fired before uninitialization
+    onClick: function(element) {}, // the function that will be fired on click on any allowed element
     namespace: "theroom", // inspector element ID as string (e.g. : #theroom)
     bgcolor: "rgba(255,0,0,0.5)", // inspector element background color as hex
     transitionSpeed: 200, // inspector element transition speed (see: CSS Transition Speed)

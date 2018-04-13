@@ -16,6 +16,7 @@
       bgcolor: "rgba(255,0,0,0.5)",
       transitionSpeed: 200,
       useInline: true,
+      showInfo: true,
       onStart: null,
       onStarting: null,
       onStop: null,

@@ -1,7 +1,7 @@
 /*
 * TheRoom JS v1.0.1
-* A vanilla javascript plugin that allows you to outline dom element like web inspector.
-* Works on Chrome, Firefox and Safari
+* A vanilla javascript plugin that allows you to outline dom elements like web inspectors.
+* Works with Chrome, Firefox, Safari, Internet Explorer and Edge
 *
 * Author:
 * Huseyin Elmas <hsynlms47@gmail.com>

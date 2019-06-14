@@ -1,10 +1,3 @@
-/*!
-* theroomjs v1.0.2
-* A vanilla javascript plugin that allows you to outline dom elements like web inspectors.
-* Works with Chrome, Firefox, Safari, Internet Explorer and Edge
-*
-* Author: Huseyin Elmas
-*/
 (function(window, document) {
   // define the plugin in global variable to make it accessible from outside
   window.theRoom = (function(window, document) {

@@ -1,3 +1,4 @@
+const chalk = require('chalk');
 const gulp = require('gulp');
 const rename = require('gulp-rename');
 const uglify = require('gulp-uglify');
@@ -51,7 +52,10 @@ gulp.task('build', gulp.series('clean', function () {
     )
     .pipe(rename({ suffix: '.min' }))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest(paths.dist));
+    .pipe(gulp.dest(paths.dist))
+    .on('end', function () {
+      console.log(chalk.green('Build process has been completed successfully.'));
+    });
 }));
 
 // run gulp

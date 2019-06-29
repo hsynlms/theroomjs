@@ -3,7 +3,7 @@
 
 [![NPM](https://nodei.co/npm/theroomjs.png)](https://nodei.co/npm/theroomjs/)
 
-theroomjs can be accessable in global variable and named as `theRoom`. It exposes outside two functions, `start` and `stop`. It works with Chrome, Firefox, Safari, Internet Explorer and Edge.
+theroomjs can be accessable in global variable and named as `theRoom`. It exposes outside two functions, `start` and `stop`. Its compatible with Chrome, Firefox, Safari, Internet Explorer and Edge.
 
 Demo : https://codepen.io/hsynlms/pen/jzjOyo
 

@@ -1,312 +1,234 @@
 /*!
-* theroomjs v1.0.2
+* theroomjs v2.0.0
 * A vanilla javascript plugin that allows you to outline dom elements like web inspectors.
 * Works with Chrome, Firefox, Safari, Internet Explorer and Edge
 *
 * Author: Huseyin Elmas
 */
 (function(window, document) {
-  // define the plugin in global variable to make it accessible from outside
-  window.theRoom = (function(window, document) {
-    // default options
-    var options = {
-      inspector: null,
-      namespace: "theroom",
-      bgcolor: "rgba(255,0,0,0.5)",
-      transitionSpeed: 200,
-      useInline: true,
-      showInfo: true,
-      template: "",
-      onStart: null,
-      onStarting: null,
-      onStop: null,
-      onStopping: null,
-      onClick: null,
-      exceptions: [
-        "head",
-        "meta",
-        "link",
-        "style",
-        "title",
-        "script"
-      ]
-    };
+  // defaults
+  var namespace = 'theRoom';
+  var options = {};
+  var defaults = {
+    inspector: null,
+    htmlClass: true,
+    blockRedirection: false,
+    excludes: [
+      'meta',
+      'link',
+      'style',
+      'script'
+    ]
+    /*
+    events:
+      - started
+      - starting
+      - stopped
+      - stopping
+      - click
+      - mouseover
+      - hook
+    */
+  };
 
-    // some snippet functions
-    var utils = (function() {
-      var objectToCss = function(obj) {
-        var css = "";
-        
-        if (typeof obj === "object" && obj) {
-          css += "{";
+  // get the inspector instance
+  var getInspector = function() {
+    // validation
+    if (typeof options.inspector === 'string') {
+      // if the provided inspector is a css selector, return the element
+      var el = document.querySelector(options.inspector);
+      if (el) return el;
+    }
 
-          for (var key in obj) {
-            if (obj.hasOwnProperty(key) && obj[key]) {
-              css += key + ": " + obj[key] + ";";
-            }
-          }
+    if (options.inspector instanceof Element) {
+      // if the provided inspector is a dom element, return it
+      return el;
+    }
 
-          css += "}";
-        }
+    // validation failed
+    throw 'inspector not found.\nit can be a css selector or a DOM element';
+  };
 
-        return css;
-      };
+  // get the query to make the elements be inspected
+  var getExclusionSelector = function() {
+    return options.excludes.join(',');
+  };
 
-      return {
-        objectToCss: objectToCss
-      };
-    })();
+  // merge options
+  var applyOptions = function(opts) {
+    // validation
+    if (!opts) return;
+    if (typeof opts !== 'object') {
+      throw 'options is expected to be an object';
+    }
 
-    // retrieve active inspector instance
-    var getInspector = function() {
-      // check if there is an existing inspector
-      // if not create one
-      if (!options.inspector) {
-        options.inspector = createInspector();
+    // change old values with new ones
+    for (var opt in opts) {
+      if (opts.hasOwnProperty(opt)) {
+        options[opt] = opts[opt];
+      }
+    }
+  };
+
+  // event emitter
+  var eventEmitter = function(event) {
+    // hook event invocation
+    eventController('hook', event);
+
+    // get target element
+    var target = event.target;
+
+    // validation
+    // skip itself
+    if (!target || target === options.inspector) return;
+
+    // do not inspect excluded elements
+    var query = getExclusionSelector();
+    var excludedElements = Array.prototype.slice.call(document.querySelectorAll(query));
+    if (excludedElements.indexOf(target) >= 0) return;
+
+    if (event.type === 'mouseover') {
+      // get target element information
+      var pos = target.getBoundingClientRect();
+      var scrollTop = window.scrollY || document.documentElement.scrollTop;
+      var scrollLeft = window.scrollX || document.documentElement.scrollLeft;
+      var width = pos.width;
+      var height = pos.height;
+      var top = Math.max(0, pos.top + scrollTop);
+      var left = Math.max(0, pos.left + scrollLeft);
+
+      // set inspector element position and dimension
+      options.inspector.style.top = top + 'px';
+      options.inspector.style.left = left + 'px';
+      options.inspector.style.width = width + 'px';
+      options.inspector.style.height = height + 'px';
+    }
+
+    // event invocation
+    eventController(event.type, target);
+  };
+
+  // inspection engine
+  var inspectionEngine = function(type) {
+    // get HTML element class names
+    var htmlClasses = document.querySelector('html').className;
+
+    if (type === 'start') {
+      // block redirection to another page
+      if (options.blockRedirection === true) {
+        window.onbeforeunload = function() {
+          return true;
+        };
       }
 
-      // return the inspector
-      return options.inspector;
-    };
+      // bind event listeners
+      document.addEventListener('click', eventEmitter);
+      document.addEventListener('mouseover', eventEmitter);
 
-    // prepare inspector element css styles
-    var prepareInspectorStyles = function(top, left, width, height) {
-      // prepare inspector element styles
-      var _styles = {
-        "transition": ("all " + options.transitionSpeed + "ms"),
-        "position": "absolute",
-        "top": (top || 0) + "px",
-        "left": (left || 0) + "px",
-        "width": (width || 0) + "px",
-        "height": (height || 0) + "px",
-        "pointer-events": "none",
-        "z-index": "2147483647",
-        "background-color": options.bgcolor
-      };
-
-      var styles = utils.objectToCss(_styles);
-
-      return styles;
-    };
-
-    // inspector element creator
-    var createInspector = function() {
-      // create a new inspector element
-      var inspector = document.createElement("div");
-      inspector.id = options.namespace;
-
-      // get inspector styles as a string
-      var inspectorStyles = prepareInspectorStyles();
-
-      if (typeof options.useInline === "boolean" && options.useInline) {
-        inspector.style = inspectorStyles.replace(/(\{|\})/g, "");
-      } else {
-        // create style element and put styles inside
-        var styleEl = document.createElement("style");
-        styleEl.type = "text/css";
-        
-        inspectorStyles = ("#" + options.namespace + inspectorStyles);
-
-        // check for IE support
-        if (styleEl.styleSheet) {
-          styleEl.styleSheet.cssText = inspectorStyles;
-        } else {
-          styleEl.appendChild(document.createTextNode(inspectorStyles));
-        }
-
-        document.getElementsByTagName("head")[0].appendChild(styleEl);
+      if (options.htmlClass === true) {
+        htmlClasses = htmlClasses + ' ' + namespace;
       }
 
-      // append inspector element into body
-      document.getElementsByTagName("body")[0].appendChild(inspector);
+      window[namespace].status = 'running';
+    } else if (type === 'stop') {
+      // unbind event listeners
+      document.removeEventListener('click', eventEmitter);
+      document.removeEventListener('mouseover', eventEmitter);
 
-      // return the created element
-      return inspector;
-    };
-
-    // selector query preparation function
-    var getSelectorQuery = function() {
-      var query = "*";
-
-      // add all exception elements into query
-      // it supports all basic css selectors
-      if (options.exceptions.length) {
-        for (var i = 0; i < options.exceptions.length; i++) {
-          query += ":not(" + options.exceptions[i] + ")";
-        }
+      if (options.htmlClass === true) {
+        htmlClasses = htmlClasses.replace(' ' + namespace, '');
       }
 
-      // return the query
-      return query;
-    };
-
-    // apply new options to existing one
-    var applyNewOptions = function(opts) {
-      // if given parameter is not valid, exit
-      if (!opts) return;
-
-      // change old values with new ones
-      for (var opt in opts) {
-        if (opts.hasOwnProperty(opt)) {
-          options[opt] = opts[opt];
-        }
-      }
-    };
-
-    // event emitter function
-    var eventEmitter = function(event) {
-      // get target node
-      var target = event.target;
-
-      // skip itself
-      if (target.id === options.namespace) return;
-
-      switch(event.type) {
-        case "click":
-          eventController("onClick", target);
-
-          break;
-        case "mouseover":
-          // get target element position information
-          var pos = target.getBoundingClientRect();
-
-          // get scroll top value
-          var scrollTop = window.scrollY || document.documentElement.scrollTop; // IE fix
-
-          var width = pos.width;
-          var height = pos.height;
-          var top = Math.max(0, pos.top + scrollTop);
-          var left = pos.left;
-
-          // get new inspector styles to be able to drag inspector on target node
-          var inspectorStyles = prepareInspectorStyles(top, left, width, height).replace(/(\{|\})/g, "");
-          options.inspector.setAttribute("style", inspectorStyles);
-
-          // show the element details
-          if (typeof options.showInfo === "boolean" && options.showInfo) {
-            var detailsEl = options.inspector.querySelector("#" + options.namespace + "-info");
-
-            if (detailsEl) {
-              detailsEl.querySelector("#" + options.namespace + "-tag").innerText = target.tagName;
-              detailsEl.querySelector("#" + options.namespace + "-id").innerText = (target.id ? ("#" + target.id) : "");
-              detailsEl.querySelector("#" + options.namespace + "-class").innerText = (target.className ? ("." + target.className.split(/\s+/).join(".")) : "");
-            }
-          }
-
-          break;
-      }
-    };
-
-    // start/stop engine
-    var engine = function(type) {
-      // check if the given parameter is valid
-      if (!type) return;
-
-      switch(type) {
-        case "start":
-          // bind element click handler
-          document.querySelector("body").addEventListener("click", eventEmitter);
-
-          // if details are activated, append template into inspector element
-          if (typeof options.showInfo === "boolean" &&
-              options.showInfo &&
-              typeof options.template === "string" &&
-              options.template) {
-            options.inspector.innerHTML = options.template;
-          }
-
-          break;
-        case "stop":
-          // unbind element click handler
-          document.querySelector("body").removeEventListener("click", eventEmitter);
-
-          break;
+      // unblock redirection to another page
+      if (options.blockRedirection === true) {
+        window.onbeforeunload = undefined;
       }
 
-      // get all existing nodes in the page
-      var query = getSelectorQuery();
-      var allNodes = document.querySelectorAll(query);
+      window[namespace].status = 'stopped';
+    }
+  };
 
-      // bind mouseover event for each node
-      for (var i = 0; i < allNodes.length; i++) {
-        // event un/binding
-        if (type === "stop") {
-          allNodes[i].removeEventListener("mouseover", eventEmitter);
-        } else if (type === "start") {
-          allNodes[i].addEventListener("mouseover", eventEmitter);
-        }
-      }
-    };
+  // event executor
+  var eventController = function(type, arg) {
+    // validation
+    if (!options[type]) return;
+    if (typeof options[type] !== 'function') {
+      throw 'event handler must be a function: ' + type;
+    }
 
-    // event executor
-    var eventController = function(type, element) {
-      // even type validation
-      if (!options[type] || typeof options[type] !== "function") return;
+    // call the event
+    switch(type) {
+      case 'started':
+      case 'starting':
+      case 'stopped':
+      case 'stopping':
+      case 'click':
+      case 'mouseover':
+      case 'hook':
+        // pass the argument
+        options[type].call(null, arg);
+        break;
+    }
+  };
 
-      // execute the event if it is provided
-      switch(type) {
-        case "onStart":
-          options.onStart.call();
+  // start inspection
+  var start = function(opts) {
+    // merge provided options with defaults
+    applyOptions(defaults);
+    applyOptions(opts);
 
-          break;
-        case "onStarting":
-          options.onStarting.call();
+    // get the inspector element
+    options.inspector = getInspector();
 
-          break;
-        case "onStop":
-          options.onStop.call();
+    // starting event call
+    eventController('starting');
 
-          break;
-        case "onStopping":
-          options.onStopping.call();
+    // start the inspection engine
+    inspectionEngine('start');
 
-          break;
-        case "onClick":
-          // pass the clicked element
-          options.onClick.call(undefined, element);
+    // started event call
+    eventController('started');
+  };
 
-          break;
-      }
-    };
+  // stop inspection
+  var stop = function() {
+    // stopping event call
+    eventController('stopping');
 
-    // start to inspect function
-    var start = function(opts) {
-      // override user options
-      applyNewOptions(opts);
+    // stop the inspection engine
+    inspectionEngine('stop');
 
-      // run onStarting event
-      eventController("onStarting");
+    // stopped event call
+    eventController('stopped');
 
-      // get an inspector element instance
-      var inspector = getInspector();
+    // reset options
+    options = {};
+  };
 
-      // start engine
-      engine("start");
+  // dynamically event binder
+  var eventBinder = function(type, handler) {
+    // validation
+    if (!type) {
+      throw 'event name is is not valid';
+    }
 
-      // run onStart event
-      eventController("onStart");
-    };
+    if (typeof type !== 'string') {
+      throw 'event name is expected to be a string but got: ' + typeof type;
+    }
 
-    // stop to inspect function
-    var stop = function() {
-      // run onStopping event
-      eventController("onStopping");
+    if (typeof handler !== 'function') {
+      throw 'event handler is not a function for: ' + type;
+    }
 
-      // stop engine
-      engine("stop");
+    // update options
+    options[type] = handler;
+  };
 
-      // remove the inspector
-      getInspector().remove();
-
-      options.inspector = null;
-
-      // run onStop event
-      eventController("onStop");
-    };
-
-    return {
-      start: start,
-      stop: stop
-    };
-  })(window, document);
+  // make it accessible from outside
+  window[namespace] = {
+    start: start,
+    stop: stop,
+    on: eventBinder,
+    status: defaults.status
+  };
 })(window, document);

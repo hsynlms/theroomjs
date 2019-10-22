@@ -3,78 +3,76 @@
 
 [![NPM](https://nodei.co/npm/theroomjs.png)](https://nodei.co/npm/theroomjs/)
 
-theroomjs can be accessable in global variable and named as `theRoom`. It exposes outside two functions, `start` and `stop`. Its compatible with Chrome, Firefox, Safari, Internet Explorer and Edge.
+theroomjs can be accessable in global variable as `theRoom`. Its compatible with modern browsers such as Google Chrome, Mozilla Firefox, Safari, Edge and Internet Explorer as a plus.
 
-Demo : https://codepen.io/hsynlms/pen/jzjOyo
+## Options
 
-- **start(*options*)** : start function takes only one optional parameter for custom options.
+| Name              | Type               | Default                             | Description                                                                                                          |
+| ---               | ---                | ---                                 | ---                                                                                                                  |
+| inspector         | string or DOM node | null                                | Placeholder element for inspection. It won't be inspected (excluded)                                                 |
+| htmlClass         | boolean            | true                                | If `true` it will automatically add its namespace as class name to HTML element                                      |
+| blockRedirection  | boolean            | false                               | If `true` it will prevent the page to be redirected elsewhere by setting up `onbeforeunload`                         |
+| excludes          | array              | ['meta', 'link', 'style', 'script'] | Excluded element list for inspection. Basic CSS selectors are allowed. For more information `document.querySelector` |
+
+## Events
+
+| Name              | Type     | Default | Description                                                                                                                                                |
+| ---               | ---      | ---     | ---                                                                                                                                                        |
+| starting          | function | null    | Fired before starting inspection                                                                                                                           |
+| started           | function | null    | Fired after starting inspection                                                                                                                            |
+| stopping          | function | null    | Fired before ending inspection                                                                                                                             |
+| stopped           | function | null    | Fired after ending inspection                                                                                                                              |
+| click             | function | null    | Fired when click event is triggered on an inspected element. The element passed as argument                                                                |
+| mouseover         | function | null    | Fired when mouseover event is triggered on an inspected element. The element passed as argument                                                            |
+| hook              | function | null    | Fired at the very beginning of `click` and `mouseover` event listeners. [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event) passed as argument |
+
+> All events also may be defined in the options.
+
+## Deprecated (v1)
+
+| Option            | Description     |
+| ---               | ---             |
+| onStart           | See `started`   |
+| onStarting        | See `starting`  |
+| onStop            | See `stopped`   |
+| onStopping        | See `stopping`  |
+| onClick           | See `click`     |
+| showInfo          | X               |
+| template          | X               |
+| namespace         | X               |
+| bgcolor           | X               |
+| transitionSpeed   | X               |
+| useInline         | X               |
+| exceptions        | See `excludes`  |
+
+## theRoom exposed object
+
+Exposed object contains four properties.
+
+| Option            | Type     | Parameters                          | Description                                               |
+| ---               | ---      | ---                                 | ---                                                       |
+| on                | function | `event name` and `handler function` | Dynamically event binding                                 |
+| start             | function | `options`                           | Starting inspection                                       |
+| stop              | function | -                                   | Stopping inspection                                       |
+| status            | string   | -                                   | Inspection status. Can be `idle`, `running` and `stopped` |
+
 ```javascript
-  // start theRoom to inspect elements
-  window.theRoom.start();
-```
+  // start inspection
+  window.theRoom.start({
+    inspector: '.inspector-element',
+    blockRedirection: true,
+    excludes: ['footer']
+  });
 
-- **stop()** : stop function unbinds all event listeners for HTML nodes and removes the inspector instance on HTML side.
-```javascript
-  // stop theRoom to inspect elements
+  // stop inspection
   window.theRoom.stop();
-```
 
-## Available options
-```javascript
-  // custom options
-  var options = {
-    onStart: function() {}, // the function that will be fired after initialization
-    onStarting: function() {}, // the function that will be fired before initialization
-    onStop: function() {}, // the function that will be fired after uninitialization
-    onStopping: function() {}, // the function that will be fired before uninitialization
-    onClick: function(element) {}, // the function that will be fired on click on any allowed element
-    showInfo: true, // show target element tag, id and class information
-    template: "", // the template which will contain target element information (showInfo must be activated)
-    namespace: "theroom", // inspector element ID as string (e.g. : #theroom)
-    bgcolor: "rgba(255,0,0,0.5)", // inspector element background color as hex
-    transitionSpeed: 200, // inspector element transition speed (see: CSS Transition Speed)
-    useInline: true, // use inline style attribute instead <style> for styling inspector element
-    exceptions: [] // exception element list. inspector wont be available for them. basic css selectors are supported
-  };
-  
-  // start theRoom to inspect elements
-  window.theRoom.start(options);
-```
+  // dynamically bind event
+  window.theRoom.on('click', function() {
+    console.log('clicked');
+  });
 
-### Template example
-```html
-<div id="theroom-info">
-  <span id="theroom-tag"></span>
-  <span id="theroom-id"></span>
-  <span id="theroom-class"></span>
-</div>
-
-<style>
-  #theroom-info {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    left: 0;
-    font-family: "Courier";
-    background-color: #ffffff;
-    padding: 10px;
-    color: #333333;
-    text-align: center;
-    box-shadow: 0px 4px 20px rgba(0,0,0,0.3);
-  }
-
-  #theroom-tag {
-    color: #C2185B;
-  }
-
-  #theroom-id {
-    color: #5D4037;
-  }
-
-  #theroom-class {
-    color: #607D8B;
-  }
-</style>
+  console.log(window.theRoom.status);
 ```
 
 # License

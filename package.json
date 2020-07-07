@@ -11,7 +11,14 @@
     "type": "git",
     "url": "git+https://github.com/hsynlms/theroomjs.git"
   },
-  "author": "Huseyin Elmas",
+  "keywords": [
+    "inspector",
+    "web-inspector",
+    "dom-element",
+    "dom",
+    "outline"
+  ],
+  "author": "Huseyin ELMAS",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/hsynlms/theroomjs/issues"

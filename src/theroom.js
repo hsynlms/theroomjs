@@ -1,227 +1,189 @@
-(function(window, document) {
+(function (window, document) {
   // defaults
-  var namespace = 'theRoom';
-  var options = {};
-  var defaults = {
+  var namespace = 'theRoom'
+  var status = 'idle'
+  var options = {
     inspector: null,
     htmlClass: true,
     blockRedirection: false,
-    excludes: [
-      'meta',
-      'link',
-      'style',
-      'script'
-    ]
-    /*
-    events:
-      - started
-      - starting
-      - stopped
-      - stopping
-      - click
-      - mouseover
-      - hook
-    */
-  };
+    excludes: []
+  }
 
-  // get the inspector instance
-  var getInspector = function() {
+  // gets the inspector instance
+  var getInspector = function () {
     // validation
     if (typeof options.inspector === 'string') {
       // if the provided inspector is a css selector, return the element
-      var el = document.querySelector(options.inspector);
-      if (el) return el;
+      var el = document.querySelector(options.inspector)
+      if (el) return el
     }
 
+    // validation
     if (options.inspector instanceof Element) {
       // if the provided inspector is a dom element, return it
-      return el;
+      return el
     }
 
     // validation failed
-    throw 'inspector not found.\nit can be a css selector or a DOM element';
-  };
+    throw Error('inspector must be a css selector or a DOM element')
+  }
 
-  // get the query to make the elements be inspected
-  var getExclusionSelector = function() {
-    return options.excludes.join(',');
-  };
+  // gets the css selector for excluded list
+  var getExclusionSelector = function () {
+    return options.excludes.join(',')
+  }
 
-  // merge options
-  var applyOptions = function(opts) {
+  // merge options with defaults
+  var applyOptions = function (opts) {
     // validation
-    if (!opts) return;
-    if (typeof opts !== 'object') {
-      throw 'options is expected to be an object';
-    }
+    if (typeof opts !== 'object') throw Error('options is expected to be an object')
 
-    // change old values with new ones
+    // merge
     for (var opt in opts) {
       if (opts.hasOwnProperty(opt)) {
-        options[opt] = opts[opt];
+        options[opt] = opts[opt]
       }
     }
-  };
+  }
 
   // event emitter
-  var eventEmitter = function(event) {
+  var eventEmitter = function (event) {
     // hook event invocation
-    eventController('hook', event);
+    eventController('hook', event)
 
     // get target element
-    var target = event.target;
+    var target = event.target
 
-    // validation
-    // skip itself
-    if (!target || target === options.inspector) return;
+    // validation --also skip inspector itself--
+    if (!target || target === options.inspector) return
 
     // do not inspect excluded elements
-    var query = getExclusionSelector();
-    var excludedElements = Array.prototype.slice.call(document.querySelectorAll(query));
-    if (excludedElements.indexOf(target) >= 0) return;
+    var excludedSelector = getExclusionSelector()
+    var excludedElements = Array.prototype.slice.call(document.querySelectorAll(excludedSelector))
+    if (excludedElements.indexOf(target) >= 0) return
 
     if (event.type === 'mouseover') {
       // get target element information
-      var pos = target.getBoundingClientRect();
-      var scrollTop = window.scrollY || document.documentElement.scrollTop;
-      var scrollLeft = window.scrollX || document.documentElement.scrollLeft;
-      var width = pos.width;
-      var height = pos.height;
-      var top = Math.max(0, pos.top + scrollTop);
-      var left = Math.max(0, pos.left + scrollLeft);
+      var pos = target.getBoundingClientRect()
+      var scrollTop = window.scrollY || document.documentElement.scrollTop
+      var scrollLeft = window.scrollX || document.documentElement.scrollLeft
+      var width = pos.width
+      var height = pos.height
+      var top = Math.max(0, pos.top + scrollTop)
+      var left = Math.max(0, pos.left + scrollLeft)
 
       // set inspector element position and dimension
-      options.inspector.style.top = top + 'px';
-      options.inspector.style.left = left + 'px';
-      options.inspector.style.width = width + 'px';
-      options.inspector.style.height = height + 'px';
+      options.inspector.style.top = top + 'px'
+      options.inspector.style.left = left + 'px'
+      options.inspector.style.width = width + 'px'
+      options.inspector.style.height = height + 'px'
     }
 
     // event invocation
-    eventController(event.type, target);
-  };
+    eventController(event.type, target)
+  }
 
   // inspection engine
-  var inspectionEngine = function(type) {
-    // get HTML element class names
-    var htmlClasses = document.querySelector('html').className;
+  var engine = function (type) {
+    // get HTML element
+    var htmlEl = document.querySelector('html')
 
     if (type === 'start') {
       // block redirection to another page
       if (options.blockRedirection === true) {
-        window.onbeforeunload = function() {
-          return true;
-        };
+        window.onbeforeunload = function () {
+          return true
+        }
       }
 
       // bind event listeners
-      document.addEventListener('click', eventEmitter);
-      document.addEventListener('mouseover', eventEmitter);
+      document.addEventListener('click', eventEmitter)
+      document.addEventListener('mouseover', eventEmitter)
 
-      if (options.htmlClass === true) {
-        htmlClasses = htmlClasses + ' ' + namespace;
-      }
+      // add namespace as class to HTML element
+      if (options.htmlClass === true) htmlEl.className += ' ' + namespace
 
-      window[namespace].status = 'running';
+      status = 'running'
     } else if (type === 'stop') {
       // unbind event listeners
-      document.removeEventListener('click', eventEmitter);
-      document.removeEventListener('mouseover', eventEmitter);
+      document.removeEventListener('click', eventEmitter)
+      document.removeEventListener('mouseover', eventEmitter)
 
-      if (options.htmlClass === true) {
-        htmlClasses = htmlClasses.replace(' ' + namespace, '');
-      }
+      // remove namespace from HTML element class list
+      if (options.htmlClass === true) htmlEl.className = htmlEl.className.replace(' ' + namespace, '')
 
       // unblock redirection to another page
-      if (options.blockRedirection === true) {
-        window.onbeforeunload = undefined;
-      }
+      if (options.blockRedirection === true) window.onbeforeunload = undefined
 
-      window[namespace].status = 'stopped';
+      status = 'stopped'
     }
-  };
+  }
 
   // event executor
-  var eventController = function(type, arg) {
+  var eventController = function (type, arg) {
     // validation
-    if (!options[type]) return;
-    if (typeof options[type] !== 'function') {
-      throw 'event handler must be a function: ' + type;
-    }
+    if (typeof options[type] !== 'function') throw Error('event handler must be a function: ' + type)
 
     // call the event
-    switch(type) {
-      case 'started':
+    switch (type) {
       case 'starting':
-      case 'stopped':
+      case 'started':
       case 'stopping':
+      case 'stopped':
       case 'click':
       case 'mouseover':
       case 'hook':
         // pass the argument
-        options[type].call(null, arg);
-        break;
+        options[type].call(null, arg)
+        break
     }
-  };
+  }
 
   // start inspection
-  var start = function(opts) {
+  var start = function (opts) {
     // merge provided options with defaults
-    applyOptions(defaults);
-    applyOptions(opts);
+    applyOptions(opts)
 
     // get the inspector element
-    options.inspector = getInspector();
+    options.inspector = getInspector()
 
-    // starting event call
-    eventController('starting');
+    // starting event
+    eventController('starting')
 
     // start the inspection engine
-    inspectionEngine('start');
+    engine('start')
 
-    // started event call
-    eventController('started');
-  };
+    // started event
+    eventController('started')
+  }
 
   // stop inspection
-  var stop = function() {
-    // stopping event call
-    eventController('stopping');
+  var stop = function () {
+    // stopping event
+    eventController('stopping')
 
     // stop the inspection engine
-    inspectionEngine('stop');
+    engine('stop')
 
-    // stopped event call
-    eventController('stopped');
-
-    // reset options
-    options = {};
-  };
+    // stopped event
+    eventController('stopped')
+  }
 
   // dynamically event binder
-  var eventBinder = function(type, handler) {
-    // validation
-    if (!type) {
-      throw 'event name is is not valid';
-    }
-
-    if (typeof type !== 'string') {
-      throw 'event name is expected to be a string but got: ' + typeof type;
-    }
-
-    if (typeof handler !== 'function') {
-      throw 'event handler is not a function for: ' + type;
-    }
+  var eventBinder = function (name, handler) {
+    // validations
+    if (typeof name !== 'string') throw Error('event name is expected to be a string but got: ' + typeof name)
+    if (typeof handler !== 'function') throw Error('event handler is not a function for: ' + name)
 
     // update options
-    options[type] = handler;
-  };
+    options[name] = handler
+  }
 
   // make it accessible from outside
   window[namespace] = {
     start: start,
     stop: stop,
     on: eventBinder,
-    status: defaults.status
-  };
-})(window, document);
+    status: status
+  }
+})(window, document)

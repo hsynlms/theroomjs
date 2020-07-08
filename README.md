@@ -12,7 +12,7 @@
 | inspector         | string or DOM node | -          | Placeholder element for inspection. It will not be inspected  |
 | htmlClass         | boolean            | true       | If `true` namespace theRoom will be automatically added to `<html>` element class list |
 | blockRedirection  | boolean            | false      | If `true` the page will not be redirected elsewhere. The library will override `onbeforeunload` for prevention |
-| excludes          | array              | ['meta', 'link', 'style', 'script'] | Element list that excluded for inspection. Basic CSS selectors are allowed. For more information please see [document.querySelector](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector) |
+| excludes          | array              | -          | Element list that excluded for inspection. Basic CSS selectors are allowed. For more information please see [document.querySelector](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector) |
 
 ## Events
 
@@ -37,7 +37,7 @@
 | on                | function | `event name` and `handler function` | Event binder (dynamic binding supported)                  |
 | start             | function | `options`                           | Starting inspection                                       |
 | stop              | function | -                                   | Stopping inspection                                       |
-| status            | string   | -                                   | Inspection status. Can be `idle`, `running` and `stopped` |
+| status            | function | -                                   | Returns inspection engine status. Can be `idle`, `running` and `stopped` |
 
 ## Usage
 
@@ -58,7 +58,9 @@
   })
 
   // log the current status
-  console.log(window.theRoom.status)
+  console.log(
+    window.theRoom.status()
+  )
 ```
 
 ## Contribution

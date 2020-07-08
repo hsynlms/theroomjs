@@ -3,58 +3,43 @@
 
 [![NPM](https://nodei.co/npm/theroomjs.png)](https://nodei.co/npm/theroomjs/)
 
-theroomjs can be accessable in global variable as `theRoom`. Its compatible with modern browsers such as Google Chrome, Mozilla Firefox, Safari, Edge and Internet Explorer as a plus.
+`theroomjs` can be accessable globally as `theRoom`. It's compatible with modern browsers such as Google Chrome, Mozilla Firefox, Safari, Edge and Internet Explorer.
 
 ## Options
 
-| Name              | Type               | Default                             | Description                                                                                                          |
-| ---               | ---                | ---                                 | ---                                                                                                                  |
-| inspector         | string or DOM node | null                                | Placeholder element for inspection. It won't be inspected (excluded)                                                 |
-| htmlClass         | boolean            | true                                | If `true` it will automatically add its namespace as class name to HTML element                                      |
-| blockRedirection  | boolean            | false                               | If `true` it will prevent the page to be redirected elsewhere by setting up `onbeforeunload`                         |
-| excludes          | array              | ['meta', 'link', 'style', 'script'] | Excluded element list for inspection. Basic CSS selectors are allowed. For more information `document.querySelector` |
+| Name              | Type               | Default    | Description                         |
+| ---               | ---                | ---        | ---                                 |
+| inspector         | string or DOM node | -          | Placeholder element for inspection. It will not be inspected  |
+| htmlClass         | boolean            | true       | If `true` namespace theRoom will be automatically added to `<html>` element class list |
+| blockRedirection  | boolean            | false      | If `true` the page will not be redirected elsewhere. The library will override `onbeforeunload` for prevention |
+| excludes          | array              | ['meta', 'link', 'style', 'script'] | Element list that excluded for inspection. Basic CSS selectors are allowed. For more information please see [document.querySelector](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector) |
 
 ## Events
 
-| Name              | Type     | Default | Description                                                                                                                                                |
-| ---               | ---      | ---     | ---                                                                                                                                                        |
-| starting          | function | null    | Fired before starting inspection                                                                                                                           |
-| started           | function | null    | Fired after starting inspection                                                                                                                            |
-| stopping          | function | null    | Fired before ending inspection                                                                                                                             |
-| stopped           | function | null    | Fired after ending inspection                                                                                                                              |
-| click             | function | null    | Fired when click event is triggered on an inspected element. The element passed as argument                                                                |
-| mouseover         | function | null    | Fired when mouseover event is triggered on an inspected element. The element passed as argument                                                            |
+| Name              | Type     | Default | Description                                              |
+| ---               | ---      | ---     | ---                                                      |
+| starting          | function | null    | Fired when inspection is being started inspection        |
+| started           | function | null    | Fired when inspection is started inspection              |
+| stopping          | function | null    | Fired when inspection is being stopped                   |
+| stopped           | function | null    | Fired when inspection is stopped                         |
+| click             | function | null    | Fired when inspected element is clicked. The element will be passed as first argument  |
+| mouseover         | function | null    | Fired when inspected element mouseovered. The element will be passed as first argument |
 | hook              | function | null    | Fired at the very beginning of `click` and `mouseover` event listeners. [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event) passed as argument |
 
-> All events also may be defined in the options.
+> Events can also be defined in options.
 
-## Deprecated (v1)
+## theRoom object
 
-| Option            | Description     |
-| ---               | ---             |
-| onStart           | See `started`   |
-| onStarting        | See `starting`  |
-| onStop            | See `stopped`   |
-| onStopping        | See `stopping`  |
-| onClick           | See `click`     |
-| showInfo          | X               |
-| template          | X               |
-| namespace         | X               |
-| bgcolor           | X               |
-| transitionSpeed   | X               |
-| useInline         | X               |
-| exceptions        | See `excludes`  |
-
-## theRoom exposed object
-
-Exposed object contains four properties.
+`theRoom` object contains properties which are listed in below table.
 
 | Option            | Type     | Parameters                          | Description                                               |
 | ---               | ---      | ---                                 | ---                                                       |
-| on                | function | `event name` and `handler function` | Dynamically event binding                                 |
+| on                | function | `event name` and `handler function` | Event binder (dynamic binding supported)                  |
 | start             | function | `options`                           | Starting inspection                                       |
 | stop              | function | -                                   | Stopping inspection                                       |
 | status            | string   | -                                   | Inspection status. Can be `idle`, `running` and `stopped` |
+
+## Usage
 
 ```javascript
   // start inspection
@@ -62,18 +47,22 @@ Exposed object contains four properties.
     inspector: '.inspector-element',
     blockRedirection: true,
     excludes: ['footer']
-  });
+  })
 
   // stop inspection
-  window.theRoom.stop();
+  window.theRoom.stop()
 
-  // dynamically bind event
-  window.theRoom.on('click', function() {
-    console.log('clicked');
-  });
+  // dynamically event binding
+  window.theRoom.on('click', function () {
+    console.log('clicked')
+  })
 
-  console.log(window.theRoom.status);
+  // log the current status
+  console.log(window.theRoom.status)
 ```
 
-# License
+## Contribution
+Contributions and pull requests are kindly welcomed!
+
+## License
 This project is licensed under the terms of the [MIT license](https://github.com/hsynlms/theroomjs/blob/master/LICENSE).

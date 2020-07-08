@@ -46,7 +46,10 @@
   window.theRoom.start({
     inspector: '.inspector-element',
     blockRedirection: true,
-    excludes: ['footer']
+    excludes: ['footer'],
+    click: function (element) {
+      console.log('the element is clicked:', element)
+    }
   })
 
   // stop inspection

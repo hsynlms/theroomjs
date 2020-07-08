@@ -35,8 +35,8 @@
 | Option            | Type     | Parameters                          | Description                                               |
 | ---               | ---      | ---                                 | ---                                                       |
 | on                | function | `event name` and `handler function` | Event binder (dynamic binding supported)                  |
-| start             | function | `options`                           | Starting inspection                                       |
-| stop              | function | -                                   | Stopping inspection                                       |
+| start             | function | `options`                           | Inspection starter function                               |
+| stop              | function | -                                   | Inspection stopped function                               |
 | status            | function | -                                   | Returns inspection engine status. Can be `idle`, `running` and `stopped` |
 
 ## Usage

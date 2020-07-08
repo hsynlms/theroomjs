@@ -52,17 +52,17 @@
     }
   })
 
+  // dynamically event binding
+  window.theRoom.on('mouseover', function (element) {
+    console.log('the element is hovered', element)
+  })
+
   // stop inspection
   window.theRoom.stop()
 
-  // dynamically event binding
-  window.theRoom.on('click', function () {
-    console.log('clicked')
-  })
-
   // log the current status
   console.log(
-    window.theRoom.status()
+    window.theRoom.status() // will print out -> stopped
   )
 ```
 

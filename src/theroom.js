@@ -1,7 +1,7 @@
-(function (window, document) {
-  // defaults
-  var namespace = 'theRoom'
+(function (window, document, namespace) {
   var status = 'idle'
+
+  // default options
   var options = {
     inspector: null,
     htmlClass: true,
@@ -15,7 +15,9 @@
     if (typeof options.inspector === 'string') {
       // if the provided inspector is a css selector, return the element
       var el = document.querySelector(options.inspector)
+
       if (el) return el
+      else throw Error('inspector element not found')
     }
 
     // validation
@@ -121,7 +123,8 @@
 
   // event executor
   var eventController = function (type, arg) {
-    // validation
+    // validations
+    if (!options[type]) return
     if (typeof options[type] !== 'function') throw Error('event handler must be a function: ' + type)
 
     // call the event
@@ -184,6 +187,8 @@
     start: start,
     stop: stop,
     on: eventBinder,
-    status: status
+    status: function () {
+      return status
+    }
   }
-})(window, document)
+})(window, document, 'theRoom')

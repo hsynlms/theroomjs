@@ -16,15 +16,15 @@
 
 ## Events
 
-| Name              | Type     | Default | Description                                              |
-| ---               | ---      | ---     | ---                                                      |
-| starting          | function | null    | Fired when inspection is being started inspection        |
-| started           | function | null    | Fired when inspection is started inspection              |
-| stopping          | function | null    | Fired when inspection is being stopped                   |
-| stopped           | function | null    | Fired when inspection is stopped                         |
-| click             | function | null    | Fired when inspected element is clicked. The element will be passed as first argument  |
-| mouseover         | function | null    | Fired when inspected element mouseovered. The element will be passed as first argument |
-| hook              | function | null    | Fired at the very beginning of `click` and `mouseover` event listeners. [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event) passed as argument |
+| Name       | Description                                              |
+| ---        | ---                                                      |
+| starting   | Fired when inspection is being started inspection        |
+| started    | Fired when inspection is started inspection              |
+| stopping   | Fired when inspection is being stopped                   |
+| stopped    | Fired when inspection is stopped                         |
+| click      | Fired when inspected element is clicked. The element will be passed as first argument  |
+| mouseover  | Fired when inspected element mouseovered. The element will be passed as first argument |
+| hook       | Fired at the very beginning of `click` and `mouseover` event listeners. [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event) passed as argument |
 
 > Events can also be defined in options.
 

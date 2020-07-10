@@ -127,19 +127,8 @@
     if (!options[type]) return
     if (typeof options[type] !== 'function') throw Error('event handler must be a function: ' + type)
 
-    // call the event
-    switch (type) {
-      case 'starting':
-      case 'started':
-      case 'stopping':
-      case 'stopped':
-      case 'click':
-      case 'mouseover':
-      case 'hook':
-        // pass the argument
-        options[type].call(null, arg)
-        break
-    }
+    // call the event and pass the argument
+    options[type].call(null, arg)
   }
 
   // start inspection

@@ -1,5 +1,5 @@
 /*!
-* theroomjs v2.0.1
+* theroomjs v2.0.2
 * A vanilla javascript plugin that allows you to outline dom elements like web inspectors.
 * Works with Chrome, Firefox, Safari, Internet Explorer and Edge
 *
@@ -134,19 +134,8 @@
     if (!options[type]) return
     if (typeof options[type] !== 'function') throw Error('event handler must be a function: ' + type)
 
-    // call the event
-    switch (type) {
-      case 'starting':
-      case 'started':
-      case 'stopping':
-      case 'stopped':
-      case 'click':
-      case 'mouseover':
-      case 'hook':
-        // pass the argument
-        options[type].call(null, arg)
-        break
-    }
+    // call the event and pass the argument
+    options[type].call(null, arg)
   }
 
   // start inspection

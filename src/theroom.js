@@ -9,9 +9,7 @@
     excludes: []
   }
 
-  // gets the inspector instance
   var getInspector = function () {
-    // validation
     if (typeof options.inspector === 'string') {
       // if the provided inspector is a css selector, return the element
       var el = document.querySelector(options.inspector)
@@ -20,24 +18,19 @@
       else throw Error('inspector element not found')
     }
 
-    // validation
     if (options.inspector instanceof Element) {
       // if the provided inspector is a dom element, return it
       return el
     }
 
-    // validation failed
     throw Error('inspector must be a css selector or a DOM element')
   }
 
-  // gets the css selector for excluded list
   var getExclusionSelector = function () {
     return options.excludes.join(',')
   }
 
-  // merge options with defaults
   var applyOptions = function (opts) {
-    // validation
     if (typeof opts !== 'object') throw Error('options is expected to be an object')
 
     // merge
@@ -48,12 +41,10 @@
     }
   }
 
-  // event emitter
   var eventEmitter = function (event) {
     // hook event invocation
     eventController('hook', event)
 
-    // get target element
     var target = event.target
 
     // validation --also skip inspector itself--
@@ -87,9 +78,7 @@
     eventController(event.type, target)
   }
 
-  // inspection engine
   var engine = function (type) {
-    // get HTML element
     var htmlEl = document.querySelector('html')
 
     if (type === 'start') {
@@ -123,9 +112,7 @@
     }
   }
 
-  // event executor
   var eventController = function (type, arg) {
-    // validations
     if (!options[type]) return
     if (typeof options[type] !== 'function') throw Error('event handler must be a function: ' + type)
 
@@ -133,7 +120,6 @@
     options[type].call(null, arg)
   }
 
-  // start inspection
   var start = function (opts) {
     // merge provided options with defaults
     applyOptions(opts)
@@ -141,31 +127,24 @@
     // get the inspector element
     options.inspector = getInspector()
 
-    // starting event
     eventController('starting')
 
     // start the inspection engine
     engine('start')
 
-    // started event
     eventController('started')
   }
 
-  // stop inspection
   var stop = function () {
-    // stopping event
     eventController('stopping')
 
     // stop the inspection engine
     engine('stop')
 
-    // stopped event
     eventController('stopped')
   }
 
-  // dynamically event binder
   var eventBinder = function (name, handler) {
-    // validations
     if (typeof name !== 'string') throw Error('event name is expected to be a string but got: ' + typeof name)
     if (typeof handler !== 'function') throw Error('event handler is not a function for: ' + name)
 

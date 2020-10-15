@@ -61,8 +61,10 @@
 
     // do not inspect excluded elements
     var excludedSelector = getExclusionSelector()
-    var excludedElements = Array.prototype.slice.call(document.querySelectorAll(excludedSelector))
-    if (excludedElements.indexOf(target) >= 0) return
+    if (excludedSelector) {
+      var excludedElements = Array.prototype.slice.call(document.querySelectorAll(excludedSelector))
+      if (excludedElements.indexOf(target) >= 0) return
+    }
 
     if (event.type === 'mouseover') {
       // get target element information

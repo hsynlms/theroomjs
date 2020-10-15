@@ -6,6 +6,7 @@
     inspector: null,
     htmlClass: true,
     blockRedirection: false,
+    createInspector: false,
     excludes: []
   }
 
@@ -22,6 +23,14 @@
     if (options.inspector instanceof Element) {
       // if the provided inspector is a dom element, return it
       return el
+    }
+
+    if (!options.inspector && options.createInspector) {
+      // create an inspector element
+      var _inspector = document.createElement('div')
+      _inspector.className = 'inspector-element'
+      document.body.appendChild(_inspector)
+      return _inspector
     }
 
     throw Error('inspector must be a css selector or a DOM element')
@@ -123,8 +132,9 @@
   }
 
   var start = function (opts) {
-    // merge provided options with defaults
-    applyOptions(opts)
+    if (opts) {
+      this.configure(opts)
+    }
 
     // get the inspector element
     options.inspector = getInspector()
@@ -159,6 +169,10 @@
     start: start,
     stop: stop,
     on: eventBinder,
+    configure: function (opts) {
+      // merge provided options with defaults
+      applyOptions(opts)
+    },
     status: function () {
       return status
     }

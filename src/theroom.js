@@ -1,7 +1,7 @@
 (function (window, document, namespace) {
   var status = 'idle'
 
-  // default options
+  // defaults
   var options = {
     inspector: null,
     htmlClass: true,
@@ -18,6 +18,7 @@
       else throw Error('inspector element not found')
     }
 
+    // eslint-disable-next-line
     if (options.inspector instanceof Element) {
       // if the provided inspector is a dom element, return it
       return el
@@ -35,6 +36,7 @@
 
     // merge
     for (var opt in opts) {
+      // eslint-disable-next-line
       if (opts.hasOwnProperty(opt)) {
         options[opt] = opts[opt]
       }
@@ -47,7 +49,7 @@
 
     var target = event.target
 
-    // validation --also skip inspector itself--
+    // validation --skip inspector element itself--
     if (!target || target === options.inspector) return
 
     // do not inspect excluded elements
@@ -82,8 +84,8 @@
     var htmlEl = document.querySelector('html')
 
     if (type === 'start') {
-      // block redirection to another page
       if (options.blockRedirection === true) {
+        // block page redirection
         window.onbeforeunload = function () {
           return true
         }
@@ -93,19 +95,19 @@
       document.addEventListener('click', eventEmitter)
       document.addEventListener('mouseover', eventEmitter)
 
-      // add namespace as class to HTML element
+      // add namespace to HTML tag class list
       if (options.htmlClass === true) htmlEl.className += ' ' + namespace
 
       status = 'running'
     } else if (type === 'stop') {
-      // unbind event listeners
+      // remove binded event listeners
       document.removeEventListener('click', eventEmitter)
       document.removeEventListener('mouseover', eventEmitter)
 
-      // remove namespace from HTML element class list
+      // remove namespace from HTML tag class list
       if (options.htmlClass === true) htmlEl.className = htmlEl.className.replace(' ' + namespace, '')
 
-      // unblock redirection to another page
+      // remove blocking page redirection
       if (options.blockRedirection === true) window.onbeforeunload = undefined
 
       status = 'stopped'
@@ -116,7 +118,7 @@
     if (!options[type]) return
     if (typeof options[type] !== 'function') throw Error('event handler must be a function: ' + type)
 
-    // call the event and pass the argument
+    // call the event
     options[type].call(null, arg)
   }
 
@@ -148,7 +150,7 @@
     if (typeof name !== 'string') throw Error('event name is expected to be a string but got: ' + typeof name)
     if (typeof handler !== 'function') throw Error('event handler is not a function for: ' + name)
 
-    // update options
+    // update the event
     options[name] = handler
   }
 

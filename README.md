@@ -10,6 +10,7 @@
 | Name              | Type               | Default    | Description                         |
 | ---               | ---                | ---        | ---                                 |
 | inspector         | string or DOM node | -          | Placeholder element for inspection. It will not be inspected  |
+| createInspector   | boolean            | false      | If `true` and inspector option is not provided, theRoom will try to create an inspector element whose class is `inspector-element` for you and will append it directly to the `<body/>`  |
 | htmlClass         | boolean            | true       | If `true` namespace theRoom will be automatically added to `<html>` element class list |
 | blockRedirection  | boolean            | false      | If `true` the page will not be redirected elsewhere. The library will override `onbeforeunload` for prevention |
 | excludes          | array              | -          | Element list that excluded for inspection. Basic CSS selectors are allowed. For more information please see [document.querySelector](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector) |
@@ -30,20 +31,20 @@
 
 ## theRoom object
 
-`theRoom` object contains properties which are listed in below table.
+`theRoom` object exposes:
 
 | Option            | Type     | Parameters                          | Description                                               |
 | ---               | ---      | ---                                 | ---                                                       |
 | on                | function | `event name` and `handler function` | Event binder (dynamic binding supported)                  |
-| start             | function | `options`                           | Inspection starter function                               |
+| start             | function | `options` (optional)                | Inspection starter function                               |
 | stop              | function | -                                   | Inspection stopped function                               |
+| configure         | function | `options`                           | To override theRoom option(s) anytime                     |
 | status            | function | -                                   | Returns inspection engine status. Can be `idle`, `running` and `stopped` |
 
 ## Usage
 
 ```javascript
-  // start inspection
-  window.theRoom.start({
+  window.theRoom.configure({
     inspector: '.inspector-element',
     blockRedirection: true,
     excludes: ['footer'],
@@ -51,6 +52,9 @@
       console.log('the element is clicked:', element)
     }
   })
+
+  // start inspection
+  window.theRoom.start()
 
   // dynamically event binding
   window.theRoom.on('mouseover', function (element) {

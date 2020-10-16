@@ -35,11 +35,11 @@
 
 | Option            | Type     | Parameters                          | Description                                               |
 | ---               | ---      | ---                                 | ---                                                       |
-| on                | function | `event name` and `handler function` | Event binder (dynamic binding supported)                  |
-| start             | function | `options` (optional)                | Inspection starter function                               |
-| stop              | function | -                                   | Inspection stopped function                               |
+| on                | function | `event name` and `handler function` | To dynamically event binding                              |
+| start             | function | `options` (optional)                | To start inspection                                       |
+| stop              | function | `resetInspector` (optional)         | To stop inspection                                        |
 | configure         | function | `options`                           | To override theRoom option(s) anytime                     |
-| status            | function | -                                   | Returns inspection engine status. Can be `idle`, `running` and `stopped` |
+| status            | function | -                                   | Gets inspection engine status. Can be `idle`, `running` and `stopped` |
 
 ## Usage
 
@@ -62,7 +62,8 @@
   })
 
   // stop inspection
-  window.theRoom.stop()
+  // and reset inspector styles
+  window.theRoom.stop(true)
 
   // log the current status
   console.log(

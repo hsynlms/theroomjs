@@ -154,7 +154,16 @@
     engine('stop')
 
     if (resetInspector === true) {
-      options.inspector.removeAttribute('style')
+      options.inspector.style.top = ''
+      options.inspector.style.left = ''
+      options.inspector.style.width = ''
+      options.inspector.style.height = ''
+    }
+
+    if (options.createInspector === true) {
+      // remove auto generated inspector element on stop
+      options.inspector.remove()
+      options.inspector = undefined
     }
 
     eventController('stopped')

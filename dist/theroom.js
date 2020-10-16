@@ -1,5 +1,5 @@
 /*!
-* theroomjs v2.0.7
+* theroomjs v2.0.8
 * A vanilla javascript plugin that allows you to outline dom elements like web inspectors.
 * Works with Chrome, Firefox, Safari, Internet Explorer and Edge
 *
@@ -93,7 +93,7 @@
     }
 
     // event invocation
-    eventController(event.type, target)
+    eventController(event.type, target, event)
   }
 
   var engine = function (type) {
@@ -130,12 +130,12 @@
     }
   }
 
-  var eventController = function (type, arg) {
+  var eventController = function (type, arg, arg2) {
     if (!options[type]) return
     if (typeof options[type] !== 'function') throw Error('event handler must be a function: ' + type)
 
     // call the event
-    options[type].call(null, arg)
+    options[type].call(null, arg, arg2)
   }
 
   var start = function (opts) {

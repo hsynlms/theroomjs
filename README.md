@@ -23,8 +23,8 @@
 | started    | Fired when inspection is started inspection              |
 | stopping   | Fired when inspection is being stopped                   |
 | stopped    | Fired when inspection is stopped                         |
-| click      | Fired when inspected element is clicked. The element will be passed as first argument  |
-| mouseover  | Fired when inspected element mouseovered. The element will be passed as first argument |
+| click      | Fired when inspected element is clicked. The element will be passed as first argument, [Event](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) passed as second argument |
+| mouseover  | Fired when inspected element mouseovered. The element will be passed as first argument, [Event](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) passed as second argument |
 | hook       | Fired at the very beginning of `click` and `mouseover` event listeners. [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event) passed as argument |
 
 > Events can also be defined in options.

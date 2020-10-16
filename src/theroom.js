@@ -147,11 +147,15 @@
     eventController('started')
   }
 
-  var stop = function () {
+  var stop = function (resetInspector) {
     eventController('stopping')
 
     // stop the inspection engine
     engine('stop')
+
+    if (resetInspector === true) {
+      options.inspector.removeAttribute('style')
+    }
 
     eventController('stopped')
   }

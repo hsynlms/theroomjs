@@ -22,7 +22,7 @@
     // eslint-disable-next-line
     if (options.inspector instanceof Element) {
       // if the provided inspector is a dom element, return it
-      return el
+      return options.inspector
     }
 
     if (!options.inspector && options.createInspector) {

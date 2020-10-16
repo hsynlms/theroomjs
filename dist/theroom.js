@@ -1,5 +1,5 @@
 /*!
-* theroomjs v2.0.4
+* theroomjs v2.0.5
 * A vanilla javascript plugin that allows you to outline dom elements like web inspectors.
 * Works with Chrome, Firefox, Safari, Internet Explorer and Edge
 *
@@ -154,11 +154,15 @@
     eventController('started')
   }
 
-  var stop = function () {
+  var stop = function (resetInspector) {
     eventController('stopping')
 
     // stop the inspection engine
     engine('stop')
+
+    if (resetInspector === true) {
+      options.inspector.removeAttribute('style')
+    }
 
     eventController('stopped')
   }

@@ -1,5 +1,5 @@
 /*!
-* theroomjs v2.0.6
+* theroomjs v2.0.7
 * A vanilla javascript plugin that allows you to outline dom elements like web inspectors.
 * Works with Chrome, Firefox, Safari, Internet Explorer and Edge
 *
@@ -29,7 +29,7 @@
     // eslint-disable-next-line
     if (options.inspector instanceof Element) {
       // if the provided inspector is a dom element, return it
-      return el
+      return options.inspector
     }
 
     if (!options.inspector && options.createInspector) {
@@ -161,7 +161,16 @@
     engine('stop')
 
     if (resetInspector === true) {
-      options.inspector.removeAttribute('style')
+      options.inspector.style.top = ''
+      options.inspector.style.left = ''
+      options.inspector.style.width = ''
+      options.inspector.style.height = ''
+    }
+
+    if (options.createInspector === true) {
+      // remove auto generated inspector element on stop
+      options.inspector.remove()
+      options.inspector = undefined
     }
 
     eventController('stopped')

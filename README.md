@@ -73,6 +73,9 @@
   )
 ```
 
+## Related projects
+- [path-finder](https://github.com/hsynlms/path-finder) - A Chrome extension to inspect and find out an HTML element unique CSS selector
+
 ## Contribution
 Contributions and pull requests are kindly welcomed!
 

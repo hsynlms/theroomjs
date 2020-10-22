@@ -31,24 +31,12 @@ gulp.task('build', gulp.series('clean', function () {
   return gulp.src(paths.srcFile)
     .pipe(sourcemaps.init())
     .pipe(
-      header(
-        tpl,
-        {
-          version: pkg.version,
-          author: pkg.author
-        }
-      )
+      header(tpl, pkg)
     )
     .pipe(gulp.dest(paths.dist))
     .pipe(uglify())
     .pipe(
-      header(
-        tpl,
-        {
-          version: pkg.version,
-          author: pkg.author
-        }
-      )
+      header(tpl, pkg)
     )
     .pipe(rename({ suffix: '.min' }))
     .pipe(sourcemaps.write('.'))

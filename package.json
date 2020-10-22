@@ -35,6 +35,6 @@
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.2",
     "snazzy": "^8.0.0",
-    "standard": "^14.3.4"
+    "standard": "^15.0.0"
   }
 }

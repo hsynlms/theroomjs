@@ -14,9 +14,9 @@
     "url": "git+https://github.com/hsynlms/theroomjs.git"
   },
   "keywords": [
+    "inspection",
     "inspector",
-    "web-inspector",
-    "dom-element",
+    "outline-dom-element",
     "dom",
     "outline"
   ],

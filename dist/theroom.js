@@ -1,9 +1,9 @@
 /*!
-* theroomjs v2.0.8
-* A vanilla javascript plugin that allows you to outline dom elements like web inspectors.
-* Works with Chrome, Firefox, Safari, Internet Explorer and Edge
-*
-* Author: Huseyin ELMAS
+* theroomjs v2.1.0
+* A vanilla javascript plugin that allows you to outline DOM elements like web inspectors
+* It's compatible with modern browsers such as Google Chrome, Mozilla Firefox, Safari, Edge and Internet Explorer
+* MIT License
+* by Huseyin ELMAS
 */
 (function (window, document, namespace) {
   var status = 'idle'
@@ -61,7 +61,9 @@
 
   var eventEmitter = function (event) {
     // hook event invocation
-    eventController('hook', event)
+    // do not emit mouseover and click events
+    // if the hook event returns false
+    if (eventController('hook', event) === false) return
 
     var target = event.target
 
@@ -135,7 +137,7 @@
     if (typeof options[type] !== 'function') throw Error('event handler must be a function: ' + type)
 
     // call the event
-    options[type].call(null, arg, arg2)
+    return options[type].call(null, arg, arg2)
   }
 
   var start = function (opts) {

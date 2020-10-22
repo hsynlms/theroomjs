@@ -25,7 +25,7 @@
 | stopped    | Fired when inspection is stopped                         |
 | click      | Fired when the inspected element is clicked. The element is passed as the first argument, [Event](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) passed as the second argument |
 | mouseover  | Fired when the inspected element mouseovered. The element is passed as the first argument, [Event](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) passed as the second argument |
-| hook       | Fired at the very beginning of `click` and `mouseover` event listeners. [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event) passed as the only argument |
+| hook       | Fired before `click` and `mouseover` events. [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event) passed as the only argument. **mouseover** and **click** events wont be emitted if the hook event returns `false` |
 
 > Events can also be defined in options.
 
@@ -66,6 +66,14 @@
   // stop inspection
   // and reset inspector styles
   window.theRoom.stop(true)
+
+  // dont emit mouseover and click events
+  // the the target element id is 'yusufHayaloglu'
+  window.theRoom.on('hook', function (event) {
+    if (event.target.id === 'yusufHayaloglu') {
+      return false
+    }
+  })
 
   // log the current status
   console.log(

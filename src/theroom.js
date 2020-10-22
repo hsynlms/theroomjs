@@ -54,7 +54,9 @@
 
   var eventEmitter = function (event) {
     // hook event invocation
-    eventController('hook', event)
+    // do not emit mouseover and click events
+    // if the hook event returns false
+    if (eventController('hook', event) === false) return
 
     var target = event.target
 
@@ -128,7 +130,7 @@
     if (typeof options[type] !== 'function') throw Error('event handler must be a function: ' + type)
 
     // call the event
-    options[type].call(null, arg, arg2)
+    return options[type].call(null, arg, arg2)
   }
 
   var start = function (opts) {

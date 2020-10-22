@@ -6,7 +6,7 @@ const header = require('gulp-header')
 const del = require('del')
 const pkg = require('./package.json')
 
-const tpl = '/*!\n* theroomjs v<%= version %>\n* A vanilla javascript plugin that allows you to outline dom elements like web inspectors.\n* Works with Chrome, Firefox, Safari, Internet Explorer and Edge\n*\n* Author: <%= author %>\n*/\n'
+const tpl = '/*!\n* <%= name %> v<%= version %>\n* A vanilla javascript plugin that allows you to outline DOM elements like web inspectors\n* It\'s compatible with modern browsers such as Google Chrome, Mozilla Firefox, Safari, Edge and Internet Explorer\n* MIT License\n* by <%= author %>\n*/\n'
 
 // src and dist paths
 const paths = {

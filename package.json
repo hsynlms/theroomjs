@@ -36,5 +36,11 @@
     "gulp-uglify": "^3.0.2",
     "snazzy": "^9.0.0",
     "standard": "^16.0.3"
+  },
+  "standard": {
+    "ignore": [
+      "/dist/",
+      "/src/theroom.js"
+    ]
   }
 }

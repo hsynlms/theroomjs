@@ -68,7 +68,7 @@
   window.theRoom.stop(true)
 
   // dont emit mouseover and click events
-  // the the target element id is 'yusufHayaloglu'
+  // if the target element id is 'yusufHayaloglu'
   window.theRoom.on('hook', function (event) {
     if (event.target.id === 'yusufHayaloglu') {
       return false

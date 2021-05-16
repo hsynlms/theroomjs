@@ -1,5 +1,5 @@
 /*!
-* theroomjs v2.1.3
+* theroomjs v2.1.5
 * A vanilla javascript plugin that allows you to outline DOM elements like web inspectors
 * It's compatible with modern browsers such as Google Chrome, Mozilla Firefox, Safari, Edge and Internet Explorer
 * MIT License

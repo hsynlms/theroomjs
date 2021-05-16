@@ -1,6 +1,6 @@
 {
   "name": "theroomjs",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "description": "a vanilla javascript plugin that allows you to outline dom elements like web inspectors",
   "main": "index.js",
   "scripts": {

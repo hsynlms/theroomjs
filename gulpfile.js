@@ -6,7 +6,15 @@ const header = require('gulp-header')
 const del = require('del')
 const pkg = require('./package.json')
 
-const tpl = '/*!\n* <%= name %> v<%= version %>\n* A vanilla javascript plugin that allows you to outline DOM elements like web inspectors\n* It\'s compatible with modern browsers such as Google Chrome, Mozilla Firefox, Safari, Edge and Internet Explorer\n* MIT License\n* by <%= author %>\n*/\n'
+const tpl = `
+/*!
+* <%= name %> v<%= version %>
+* A vanilla javascript plugin that allows you to outline DOM elements like web inspectors
+* It's compatible with modern browsers such as Google Chrome, Mozilla Firefox, Safari, Edge and Internet Explorer
+* MIT License
+* by <%= author %>
+*/
+`.trimStart()
 
 const paths = {
   srcFile: './src/*.js',

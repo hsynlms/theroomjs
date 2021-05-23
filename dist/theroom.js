@@ -1,5 +1,5 @@
 /*!
-* theroomjs v2.1.5
+* theroomjs v2.1.6
 * A vanilla javascript plugin that allows you to outline DOM elements like web inspectors
 * It's compatible with modern browsers such as Google Chrome, Mozilla Firefox, Safari, Edge and Internet Explorer
 * MIT License
@@ -7,8 +7,6 @@
 */
 (function (window, document, namespace) {
   var status = 'idle'
-
-  // defaults
   var options = {
     inspector: null,
     htmlClass: true,
@@ -50,7 +48,6 @@
   var applyOptions = function (opts) {
     if (typeof opts !== 'object') throw Error('options is expected to be an object')
 
-    // merge
     for (var opt in opts) {
       // eslint-disable-next-line
       if (opts.hasOwnProperty(opt)) {
@@ -67,7 +64,7 @@
 
     var target = event.target
 
-    // validation --skip inspector element itself--
+    // --skip inspector element itself--
     if (!target || target === options.inspector) return
 
     // do not inspect excluded elements
@@ -87,14 +84,12 @@
       var top = Math.max(0, pos.top + scrollTop)
       var left = Math.max(0, pos.left + scrollLeft)
 
-      // set inspector element position and dimension
       options.inspector.style.top = top + 'px'
       options.inspector.style.left = left + 'px'
       options.inspector.style.width = width + 'px'
       options.inspector.style.height = height + 'px'
     }
 
-    // event invocation
     eventController(event.type, target, event)
   }
 
@@ -109,23 +104,17 @@
         }
       }
 
-      // bind event listeners
       document.addEventListener('click', eventEmitter)
       document.addEventListener('mouseover', eventEmitter)
 
-      // add namespace to HTML tag class list
       if (options.htmlClass === true) htmlEl.className += ' ' + namespace
 
       status = 'running'
     } else if (type === 'stop') {
-      // remove binded event listeners
       document.removeEventListener('click', eventEmitter)
       document.removeEventListener('mouseover', eventEmitter)
 
-      // remove namespace from HTML tag class list
       if (options.htmlClass === true) htmlEl.className = htmlEl.className.replace(' ' + namespace, '')
-
-      // remove blocking page redirection
       if (options.blockRedirection === true) window.onbeforeunload = undefined
 
       status = 'stopped'
@@ -136,7 +125,6 @@
     if (!options[type]) return
     if (typeof options[type] !== 'function') throw Error('event handler must be a function: ' + type)
 
-    // call the event
     return options[type].call(null, arg, arg2)
   }
 
@@ -145,12 +133,10 @@
       this.configure(opts)
     }
 
-    // get the inspector element
     options.inspector = getInspector()
 
     eventController('starting')
 
-    // start the inspection engine
     engine('start')
 
     eventController('started')
@@ -159,7 +145,6 @@
   var stop = function (resetInspector) {
     eventController('stopping')
 
-    // stop the inspection engine
     engine('stop')
 
     if (resetInspector === true) {
@@ -182,17 +167,14 @@
     if (typeof name !== 'string') throw Error('event name is expected to be a string but got: ' + typeof name)
     if (typeof handler !== 'function') throw Error('event handler is not a function for: ' + name)
 
-    // update the event
     options[name] = handler
   }
 
-  // make it accessible from outside
   window[namespace] = {
     start: start,
     stop: stop,
     on: eventBinder,
     configure: function (opts) {
-      // merge provided options with defaults
       applyOptions(opts)
     },
     status: function () {

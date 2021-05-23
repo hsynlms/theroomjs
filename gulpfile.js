@@ -11,7 +11,7 @@ const tpl = `
 * <%= name %> v<%= version %>
 * A vanilla javascript plugin that allows you to outline DOM elements like web inspectors
 * It's compatible with modern browsers such as Google Chrome, Mozilla Firefox, Safari, Edge and Internet Explorer
-* MIT License
+* <%= license %> License
 * by <%= author %>
 */
 `.trimStart()

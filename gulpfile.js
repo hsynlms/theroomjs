@@ -8,7 +8,6 @@ const pkg = require('./package.json')
 
 const tpl = '/*!\n* <%= name %> v<%= version %>\n* A vanilla javascript plugin that allows you to outline DOM elements like web inspectors\n* It\'s compatible with modern browsers such as Google Chrome, Mozilla Firefox, Safari, Edge and Internet Explorer\n* MIT License\n* by <%= author %>\n*/\n'
 
-// src and dist paths
 const paths = {
   srcFile: './src/*.js',
   dist: './dist/'

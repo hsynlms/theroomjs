@@ -7,8 +7,8 @@
 `theroomjs` can be accessable globally as `theRoom`. It's compatible with modern browsers such as Google Chrome, Mozilla Firefox, Safari, Edge and Internet Explorer.
 
 ## Install
-$ npm install theroomjs --save
 ```
+$ npm install theroomjs --save
 ```
 
 ## Usage

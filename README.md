@@ -86,5 +86,5 @@ $ npm install theroomjs --save
 | configure         | function | `options`                           | To override theRoom option(s) anytime                     |
 | status            | function | -                                   | Gets inspection engine status. Can be `idle`, `running` and `stopped` |
 
-## Related projects
+## Related
 - [path-finder](https://github.com/hsynlms/path-finder) - A Chrome extension to inspect and find out an HTML element unique CSS selector
